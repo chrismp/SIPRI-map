@@ -32,11 +32,41 @@ window.onload = function(){
 	cartodb.createLayer(mapObject,layerSource)
 		.addTo(mapObject)
 		.on('done',function(layer){
+			var tooltip;
+			var sublayer = layer.getSubLayer(0);
+			sublayer.setInteraction(true);
+			sublayer.setInteractivity('cntry_name, exportyear1950');
+			sublayer.on('featureOver', function(e, latlng, pos, data, subLayerIndex) {
+				for (var i = 0; i < $('.cartodb-tooltip').length; i++) {
+					if(i!=1){
+						$('.cartodb-tooltip')[i].remove();
+					}	
+				}
+				
+				tooltip = new cdb.geo.ui.Tooltip({
+				    layer: layer,
+				    template: '<p>'+data.cntry_name+'</p>', 
+				    width: 200,
+				    position: 'bottom|right',
+				    display: 'block'
+				});
+				
+				$('body').append(tooltip.render().el);
+			}).on('error',function(err){
+				console.log('Error featureOver: '+err);
+			});
+			
+			sublayer.on('featureOut',function(e, latlng, pos, data, subLayerIndex){
+				$('.cartodb-tooltip').remove();
+			}).on('error',function(err){
+				console.log('Error featureOut: '+err);
+			});
+
 			$('#ex1').on('slide',function(slideEvent){
 				var year = slideEvent.value;
 				$('#ex6SliderVal').text(year);
-				layer.getSubLayer(0).setSQL("SELECT * FROM "+cartoDbTableName+" WHERE (exportyear"+year+">0 AND gwsyear<="+year+" AND gwsyear>0)");
-				layer.getSubLayer(0).setCartoCSS(
+				sublayer.setSQL("SELECT * FROM "+cartoDbTableName+" WHERE (exportyear"+year+">0 AND gwsyear<="+year+" AND gwsyear>0)");
+				sublayer.setCartoCSS(
 					"#sipri_import_export_map_1950_2014{" +
 					  "polygon-fill: #dddddd;" +
 					  "polygon-opacity: 1;" +
@@ -65,11 +95,20 @@ window.onload = function(){
 					"#sipri_import_export_map_1950_2014 [ exportyear"+year+" <= 20] {" +
 					   "polygon-fill: #FFFFB2;" +
 					"}");
-			
-				layer.getSubLayer(0).on('featureClick', function(e, latlng, pos, data, subLayerIndex) {
-				  console.log(e, latlng, pos, data, subLayerIndex);
+				
+				sublayer.setInteractivity('cntry_name, exportyear'+year);
+				sublayer.on('mouseover', function(e, latlng, pos, data, subLayerIndex) {
+					console.log(data);
+					var tooltip = new cdb.geo.ui.Tooltip({
+					    layer: layer,
+					    template: '<p>'+data.cntry_name+'</p>', 
+					    width: 200,
+					    position: 'bottom|right',
+					    display: 'block'
+					});
+					$('body').append(tooltip.render().el);
 				}).on('error',function(err){
-					console.log('featureClick error: '+err);
+					console.log('Error: '+err);
 				});
 			});
 		}).on('error',function(err){
