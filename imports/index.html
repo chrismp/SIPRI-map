@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SIPRI imports data, 1950-2014</title>
+	<link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/bootstrap-slider.css">
+	<link rel="stylesheet" href="css/style.css">
+	<style class="map-style" type="text/css">
+/*		#sipri_import_export_map_1950_2014 {
+		  polygon-fill: #dddddd;
+		  polygon-opacity: 1;
+		  line-color: #FFF;
+		  line-width: 0.5;
+		  line-opacity: 1;
+		}*/
+		#sipri_import_export_map_1950_2014 [ importyear1950 > 1000] {
+		   polygon-fill: #B10026;
+		}
+		#sipri_import_export_map_1950_2014 [ importyear1950 <= 1000] {
+		   polygon-fill: #E31A1C;
+		}
+		#sipri_import_export_map_1950_2014 [ importyear1950 <= 800] {
+		   polygon-fill: #FC4E2A;
+		}
+		#sipri_import_export_map_1950_2014 [ importyear1950 <= 600] {
+		   polygon-fill: #FD8D3C;
+		}
+		#sipri_import_export_map_1950_2014 [ importyear1950 <= 400] {
+		   polygon-fill: #FEB24C;
+		}
+		#sipri_import_export_map_1950_2014 [ importyear1950 <= 200] {
+		   polygon-fill: #FED976;
+		}
+		#sipri_import_export_map_1950_2014 [ importyear1950 <= 20] {
+		   polygon-fill: #FFFFB2;
+		}
+	</style>
+
+	<script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
+	<script src="js/bootstrap-slider.js"></script>
+</head>
+<body>
+	<script type="infowindow/html" id="infowindow-template">
+	  <div class="cartodb-popup">
+	    <a href="#close" class="cartodb-popup-close-button close">x</a>
+	     <div class="cartodb-popup-content-wrapper">
+	       <div class="cartodb-popup-header">
+	         <img style="width: 100%" src="http://cartodb.com/assets/logos/logos_full_cartodb_light.png"></src>
+	       </div>
+	       <div class="cartodb-popup-content">
+	         <!-- content.data contains the field info -->
+	         <h4>City: </h4>
+	         <p>{{content.data.year}}</p>
+	       </div>
+	     </div>
+	     <div class="cartodb-popup-tip-container"></div>
+	  </div>
+	</script>
+	<script src="js/script.js"></script>
+	<body>
+		<div id='map'></div>
+		<div id="slider-wrapper">
+			<input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="1950" data-slider-max="2014" data-slider-step="1" data-slider-value="1950" data-slider-tooltip="hide" />  	
+			<span id="ex6CurrentSliderValLabel">Year: <span id="ex6SliderVal">1950</span></span>
+		</div>
+		<div id="legend-wrapper">
+			<h5>Weapons imports</h5>
+		</div>
+	</body>
+</body>
+</html>

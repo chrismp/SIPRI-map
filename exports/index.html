@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ATTEMPTING TIMEMLINE</title>
+	<link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/bootstrap-slider.css">
+	<link rel="stylesheet" href="css/style.css">
+	<style class="map-style" type="text/css">
+/*		#sipri_import_export_map_1950_2014 {
+		  polygon-fill: #dddddd;
+		  polygon-opacity: 1;
+		  line-color: #FFF;
+		  line-width: 0.5;
+		  line-opacity: 1;
+		}*/
+		#sipri_import_export_map_1950_2014 [ exportyear1950 > 1000] {
+		   polygon-fill: #B10026;
+		}
+		#sipri_import_export_map_1950_2014 [ exportyear1950 <= 1000] {
+		   polygon-fill: #E31A1C;
+		}
+		#sipri_import_export_map_1950_2014 [ exportyear1950 <= 800] {
+		   polygon-fill: #FC4E2A;
+		}
+		#sipri_import_export_map_1950_2014 [ exportyear1950 <= 600] {
+		   polygon-fill: #FD8D3C;
+		}
+		#sipri_import_export_map_1950_2014 [ exportyear1950 <= 400] {
+		   polygon-fill: #FEB24C;
+		}
+		#sipri_import_export_map_1950_2014 [ exportyear1950 <= 200] {
+		   polygon-fill: #FED976;
+		}
+		#sipri_import_export_map_1950_2014 [ exportyear1950 <= 20] {
+		   polygon-fill: #FFFFB2;
+		}
+	</style>
+
+	<script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
+	<script src="js/bootstrap-slider.js"></script>
+	<script src="js/script.js"></script>
+</head>
+<body>
+	<body>
+		<div id='map'></div>
+		<div id="slider-wrapper">
+			<input id="ex1" data-slider-id='ex1Slider' type="text" data-slider-min="1950" data-slider-max="2014" data-slider-step="1" data-slider-value="1950" data-slider-tooltip="hide" />  	
+			<span id="ex6CurrentSliderValLabel">Year: <span id="ex6SliderVal">1950</span></span>
+		</div>
+		<div id="legend-wrapper">
+			<h5>Weapons exports</h5>
+		</div>
+	</body>
+</body>
+</html>
