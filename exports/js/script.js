@@ -1,5 +1,32 @@
 // http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames  FOR MORE BASEMAP TILES
 
+				function makeTooltip(layer,data,dataType,year){
+					for (var i = 0; i < $('.cartodb-tooltip').length; i++) {
+						if(i!=1){
+							$('.cartodb-tooltip')[i].remove();
+						}	
+					}
+					
+					var yearString = dataType+year;
+					var tooltipInfoArray = [
+						data.cntry_name,
+						data[yearString]
+					];
+					var tooltipHTML = tooltipInfoArray.map(function(elem,idx){
+						var txt = idx===0 ? '<b>'+elem+'</b>' : 'Weapons exports: $'+elem+'m';
+						return '<p>'+txt+'</p>';
+					}).join('');
+
+					tooltip = new cdb.geo.ui.Tooltip({
+					    layer: layer,
+					    template: tooltipHTML, 
+					    width: 200,
+					    position: 'bottom|right'
+					});
+					
+					$('body').append(tooltip.render().el);
+				}
+
 window.onload = function(){
 	var cartoDbTableName = 'sipri_import_export_map_1950_2014';
 	var domId = 'map';
@@ -37,21 +64,7 @@ window.onload = function(){
 			sublayer.setInteraction(true);
 			sublayer.setInteractivity('cntry_name, exportyear1950');
 			sublayer.on('featureOver', function(e, latlng, pos, data, subLayerIndex) {
-				for (var i = 0; i < $('.cartodb-tooltip').length; i++) {
-					if(i!=1){
-						$('.cartodb-tooltip')[i].remove();
-					}	
-				}
-				
-				tooltip = new cdb.geo.ui.Tooltip({
-				    layer: layer,
-				    template: '<p>'+data.cntry_name+'</p>', 
-				    width: 200,
-				    position: 'bottom|right',
-				    display: 'block'
-				});
-				
-				$('body').append(tooltip.render().el);
+				makeTooltip(layer,data,'exportyear',1950);
 			}).on('error',function(err){
 				console.log('Error featureOver: '+err);
 			});
@@ -97,18 +110,17 @@ window.onload = function(){
 					"}");
 				
 				sublayer.setInteractivity('cntry_name, exportyear'+year);
-				sublayer.on('mouseover', function(e, latlng, pos, data, subLayerIndex) {
-					console.log(data);
-					var tooltip = new cdb.geo.ui.Tooltip({
-					    layer: layer,
-					    template: '<p>'+data.cntry_name+'</p>', 
-					    width: 200,
-					    position: 'bottom|right',
-					    display: 'block'
-					});
-					$('body').append(tooltip.render().el);
+				
+				sublayer.on('featureOver', function(e, latlng, pos, data, subLayerIndex) {
+					makeTooltip(layer,data,'exportyear',year);
 				}).on('error',function(err){
 					console.log('Error: '+err);
+				});
+
+				sublayer.on('featureOut',function(e, latlng, pos, data, subLayerIndex){
+					$('.cartodb-tooltip').remove();
+				}).on('error',function(err){
+					console.log('Error featureOut: '+err);
 				});
 			});
 		}).on('error',function(err){
