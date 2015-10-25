@@ -1,31 +1,44 @@
 // http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames  FOR MORE BASEMAP TILES
 
-				function makeTooltip(layer,data,dataType,year){
-					for (var i = 0; i < $('.cartodb-tooltip').length; i++) {
-						if(i!=1){
-							$('.cartodb-tooltip')[i].remove();
-						}	
-					}
-					
-					var yearString = dataType+year;
-					var tooltipInfoArray = [
-						data.cntry_name,
-						data[yearString]
-					];
-					var tooltipHTML = tooltipInfoArray.map(function(elem,idx){
-						var txt = idx===0 ? '<b>'+elem+'</b>' : 'Weapons exports: $'+elem+'m';
-						return '<p>'+txt+'</p>';
-					}).join('');
+function numberWithCommas(x) {
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
-					tooltip = new cdb.geo.ui.Tooltip({
-					    layer: layer,
-					    template: tooltipHTML, 
-					    width: 200,
-					    position: 'bottom|right'
-					});
+function makeTooltip(layer,data,dataType,year){
+	for (var i = 0; i < $('.cartodb-tooltip').length; i++) {
+		if(i!=1){
+			$('.cartodb-tooltip')[i].remove();
+		}	
+	}
+	
+	var yearString = dataType+year;
+	var tooltipInfoArray = [
+		data.cntry_name,
+		data[yearString]
+	];
+	var tooltipHTML = tooltipInfoArray.map(function(elem,idx){
+		// var suffix = elem.length > 3 ? 'b' : 'm'; // If `elem` is longer than three, it's a number like 1000, or $1 billion.
+		var txt;
+		if(idx===0){
+			txt = '<b>'+elem+'</b>';
+		} else {
+			elem = elem*1000000
+			// var suffix  = elem < 1000000000 ? 'm' : 'b';
+			txt = 'Weapons exports: $'+numberWithCommas(elem);
+		}
+		// var txt = idx===0 ? '<b>'+elem+'</b>' : 'Weapons exports: $'+numberWithCommas(elem)+'m';
+		return '<p>'+txt+'</p>';
+	}).join('');
+
+	tooltip = new cdb.geo.ui.Tooltip({
+	    layer: layer,
+	    template: tooltipHTML, 
+	    width: 200,
+	    position: 'bottom|right'
+	});
 					
-					$('body').append(tooltip.render().el);
-				}
+	$('body').append(tooltip.render().el);
+}
 
 window.onload = function(){
 	var cartoDbTableName = 'sipri_import_export_map_1950_2014';
@@ -142,7 +155,7 @@ window.onload = function(){
 
 	rangeLow.className = 'legend-range';
 	rangeHigh.className = 'legend-range';
-	rangeLow.innerHTML = '$20,000 or less';
+	rangeLow.innerHTML = '$20 million or less';
 	rangeHigh.innerHTML = 'More than $1 billion';
 
 	legendWrapper.appendChild(rangeHigh);
@@ -157,4 +170,8 @@ window.onload = function(){
 	}
 
 	legendWrapper.appendChild(rangeLow);
+
+	var note = document.createElement('div');
+	note.innerHTML = 'All figures in 2014 inflation-adjusted U.S. dollars.';
+	legendWrapper.appendChild(note);
 };
